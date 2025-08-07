@@ -41,7 +41,7 @@ import { ScheduledBackupsService } from '../ScheduledBackups/ScheduledBackups.se
 import { ScheduledBackup } from '../ScheduledBackups/ScheduledBackups.types';
 import { LocationType } from '../StorageLocations/StorageLocations.types';
 
-import { DATA_MODEL_OPTIONS, MAX_BACKUP_NAME, SCHEDULED_TYPE } from './AddBackupPage.constants';
+import { COMPRESSION_OPTIONS, DATA_MODEL_OPTIONS, MAX_BACKUP_NAME, SCHEDULED_TYPE } from './AddBackupPage.constants';
 import { Messages } from './AddBackupPage.messages';
 import { AddBackupPageService } from './AddBackupPage.service';
 import { getStyles } from './AddBackupPage.styles';
@@ -353,6 +353,22 @@ const AddBackupPage: FC<GrafanaRouteComponentProps<{ type: string; id: string }>
                           buttonDataTestId="add-backup-advanced-settings"
                         >
                           <RetryModeSelector retryMode={values.retryMode} />
+                          <span className={cx(styles.wideField, styles.SelectFieldWrap)}>
+                            <Field name="compression">
+                              {({ input }) => (
+                                <SelectField
+                                  label={Messages.compression}
+                                  options={COMPRESSION_OPTIONS}
+                                  placeholder={Messages.selectCompression}
+                                  isSearchable={false}
+                                  className={styles.selectField}
+                                  data-testid="compression-select-input"
+                                  tooltipText={Messages.compressionTooltip}
+                                  {...input}
+                                />
+                              )}
+                            </Field>
+                          </span>
                           <TextInputField
                             fieldClassName={styles.textAreaField}
                             name="folder"

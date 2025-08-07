@@ -88,6 +88,7 @@ export const ScheduledBackups: FC = () => {
         mode,
         dataModel,
         folder,
+        compression,
       } = backup;
       const newName = `${Messages.scheduledBackups.copyOf}${name}`;
       setActionPending(true);
@@ -104,7 +105,8 @@ export const ScheduledBackups: FC = () => {
           false,
           mode,
           dataModel,
-          folder
+          folder,
+          compression
         );
         getData();
       } catch (e) {
@@ -217,6 +219,7 @@ export const ScheduledBackups: FC = () => {
         description={row.original.description}
         cronExpression={row.original.cronExpression}
         folder={row.original.folder}
+        compression={row.original.compression}
       />
     ),
     []

@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import React from 'react';
 
-import { BackupMode, BackupStatus, DataModel } from 'app/percona/backup/Backup.types';
+import { BackupMode, BackupStatus, DataModel, Compression } from 'app/percona/backup/Backup.types';
 import { Databases } from 'app/percona/shared/core';
 
 import { Backup } from '../BackupInventory.types';
@@ -22,6 +22,7 @@ describe('RestoreBackupModal', () => {
     vendor: Databases.mongodb,
     mode: BackupMode.SNAPSHOT,
     folder: 'folder1',
+    compression: Compression.NONE,
   };
 
   it('should render', () => {

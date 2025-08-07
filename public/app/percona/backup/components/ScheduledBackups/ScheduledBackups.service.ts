@@ -37,6 +37,7 @@ export const ScheduledBackupsService = {
         retention = 0,
         mode,
         folder,
+        compression,
       }) => ({
         id: scheduled_backup_id,
         name,
@@ -56,6 +57,7 @@ export const ScheduledBackupsService = {
         retryInterval: retry_interval,
         enabled: !!enabled,
         folder,
+        compression,
       })
     );
   },
