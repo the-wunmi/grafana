@@ -2,10 +2,11 @@ import { fireEvent, render, screen, waitForElementToBeRemoved } from '@testing-l
 import { Provider } from 'react-redux';
 import { MemoryRouter } from 'react-router-dom-v5-compat';
 
+import { OrgRole } from '@grafana/data';
 import { config } from '@grafana/runtime';
 import { wrapWithGrafanaContextMock } from 'app/percona/shared/helpers/testUtils';
 import { configureStore } from 'app/store/configureStore';
-import { OrgRole, StoreState } from 'app/types';
+import { StoreState } from 'app/types/store';
 
 import { AlertRuleTemplate } from './AlertRuleTemplate';
 import { AlertRuleTemplateService } from './AlertRuleTemplate.service';
@@ -36,12 +37,12 @@ describe('AlertRuleTemplate', () => {
         store={configureStore({
           percona: {
             user: { isAuthorized: true },
-            settings: { loading: false, result: { isConnectedToPortal: true, alertingEnabled: true } },
+            settings: { loading: false, result: { alertingEnabled: true } },
           },
         } as StoreState)}
       >
         {wrapWithGrafanaContextMock(
-          <MemoryRouter>
+          <MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
             <AlertRuleTemplate />
           </MemoryRouter>
         )}
@@ -62,12 +63,12 @@ describe('AlertRuleTemplate', () => {
         store={configureStore({
           percona: {
             user: { isAuthorized: true },
-            settings: { loading: false, result: { isConnectedToPortal: true, alertingEnabled: true } },
+            settings: { loading: false, result: { alertingEnabled: true } },
           },
         } as StoreState)}
       >
         {wrapWithGrafanaContextMock(
-          <MemoryRouter>
+          <MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
             <AlertRuleTemplate />
           </MemoryRouter>
         )}
@@ -91,12 +92,12 @@ describe('AlertRuleTemplate', () => {
         store={configureStore({
           percona: {
             user: { isAuthorized: true },
-            settings: { loading: false, result: { isConnectedToPortal: true, alertingEnabled: true } },
+            settings: { loading: false, result: { alertingEnabled: true } },
           },
         } as StoreState)}
       >
         {wrapWithGrafanaContextMock(
-          <MemoryRouter>
+          <MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
             <AlertRuleTemplate />
           </MemoryRouter>
         )}
@@ -117,12 +118,12 @@ describe('AlertRuleTemplate', () => {
         store={configureStore({
           percona: {
             user: { isAuthorized: false },
-            settings: { loading: false, result: { isConnectedToPortal: true, alertingEnabled: true } },
+            settings: { loading: false, result: { alertingEnabled: true } },
           },
         } as StoreState)}
       >
         {wrapWithGrafanaContextMock(
-          <MemoryRouter>
+          <MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
             <AlertRuleTemplate />
           </MemoryRouter>
         )}
@@ -141,12 +142,12 @@ describe('AlertRuleTemplate', () => {
         store={configureStore({
           percona: {
             user: { isAuthorized: false },
-            settings: { loading: false, result: { isConnectedToPortal: true, alertingEnabled: true } },
+            settings: { loading: false, result: { alertingEnabled: true } },
           },
         } as StoreState)}
       >
         {wrapWithGrafanaContextMock(
-          <MemoryRouter>
+          <MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
             <AlertRuleTemplate />
           </MemoryRouter>
         )}

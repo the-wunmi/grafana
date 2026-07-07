@@ -4,7 +4,7 @@ import { MemoryRouter, Route, Routes } from 'react-router-dom-v5-compat';
 
 import { wrapWithGrafanaContextMock } from 'app/percona/shared/helpers/testUtils';
 import { configureStore } from 'app/store/configureStore';
-import { StoreState } from 'app/types';
+import { StoreState } from 'app/types/store';
 
 import { ServiceChecks } from './ServiceChecks';
 
@@ -16,12 +16,15 @@ const setup = () =>
       store={configureStore({
         percona: {
           user: { isAuthorized: true },
-          settings: { loading: false, result: { isConnectedToPortal: false } },
+          settings: { loading: false },
         },
       } as StoreState)}
     >
       {wrapWithGrafanaContextMock(
-        <MemoryRouter initialEntries={['/service_1/']}>
+        <MemoryRouter
+          initialEntries={['/service_1/']}
+          future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
+        >
           <Routes>
             <Route path="/:service" Component={ServiceChecks} />
           </Routes>

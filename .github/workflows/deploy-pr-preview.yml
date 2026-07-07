@@ -11,6 +11,10 @@ on:
   #   paths:
   #     - "docs/sources/**"
 
+permissions: {}
+
+permissions: {}
+
 jobs:
   deploy-pr-preview:
     permissions:

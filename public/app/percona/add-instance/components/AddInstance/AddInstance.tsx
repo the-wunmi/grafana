@@ -1,13 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/consistent-type-assertions */
 import { FC, useLayoutEffect, useMemo } from 'react';
-import { v4 as uuidv4 } from 'uuid';
 
 import { Card, Icon, useStyles2 } from '@grafana/ui';
 import { useGrafana } from 'app/core/context/GrafanaContext';
-import { PMM_ADD_INSTANCE_PAGE } from 'app/percona/shared/components/PerconaBootstrapper/PerconaNavigation';
+import { PMM_ADD_INSTANCE_PAGE } from 'app/percona/shared/components/PerconaBootstrapper/PerconaNavigation/PerconaNavigation.constants';
 import { Databases } from 'app/percona/shared/core';
-import * as UserFlow from 'app/percona/shared/core/reducers/userFlow';
-import { useDispatch } from 'app/types';
 
 import { InstanceAvailableType, InstanceTypesExtra } from '../../panel.types';
 
@@ -40,21 +37,14 @@ export const AddInstance: FC<AddInstanceProps> = ({ selectedInstanceType, onSele
       { type: Databases.postgresql, title: Messages.titles.postgresql, icon: 'percona-database-postgresql' },
       { type: Databases.proxysql, title: Messages.titles.proxysql, icon: 'percona-database-proxysql' },
       { type: Databases.haproxy, title: Messages.titles.haproxy, icon: 'percona-database-haproxy' },
+      { type: Databases.valkey, title: Messages.titles.valkey, icon: 'percona-database-valkey' },
       { type: InstanceTypesExtra.external, title: Messages.titles.external },
       { type: InstanceTypesExtra.azure, title: Messages.titles.azure, isHidden: !showAzure },
     ],
     [showAzure]
   );
 
-  const dispatch = useDispatch();
-  dispatch(UserFlow.startFlow(uuidv4(), 'inventory:add_instance'));
-
   const selectInstanceType = (type: string) => () => {
-    dispatch(
-      UserFlow.emitEvent('select_instance_type', {
-        type,
-      })
-    );
     /* eslint-disable-next-line @typescript-eslint/consistent-type-assertions */
     onSelectInstanceType({ type: type as InstanceAvailableType });
   };

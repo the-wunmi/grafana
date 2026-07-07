@@ -1,9 +1,10 @@
 import { css } from '@emotion/css';
 
 import { GrafanaTheme2 } from '@grafana/data';
-import { selectors } from '@grafana/e2e-selectors';
-import { IconButton, Drawer, useStyles2, Text } from '@grafana/ui';
-import { t } from 'app/core/internationalization';
+import { t } from '@grafana/i18n';
+import { Drawer, useStyles2, Text } from '@grafana/ui';
+import { DEFAULT_FEED_URL } from 'app/plugins/panel/news/constants';
+import grotNewsSvg from 'img/grot-news.svg';
 
 import { NewsWrapper } from './NewsWrapper';
 
@@ -20,32 +21,21 @@ export function NewsContainer({ onClose }: NewsContainerProps) {
       title={
         <div className={styles.title}>
           <Text element="h2">{t('news.title', 'Latest from the blog')}</Text>
-          {/* @PERCONA - point to percona blog */}
           <a
-            href="https://www.percona.com/blog/"
+            href="https://grafana.com/blog/"
             target="_blank"
             rel="noreferrer"
-            title="Go to Percona blog"
+            title={t('news.link-title', 'Go to Grafana labs blog')}
             className={styles.grot}
           >
-            <img src="public/img/percona-logo.svg" alt="Percona logo" />
+            <img src={grotNewsSvg} alt="Grot reading news" />
           </a>
-          <div className={styles.actions}>
-            <IconButton
-              name="times"
-              variant="secondary"
-              onClick={onClose}
-              data-testid={selectors.components.Drawer.General.close}
-              tooltip={t(`news.drawer.close`, 'Close Drawer')}
-            />
-          </div>
         </div>
       }
       onClose={onClose}
       size="md"
     >
-      {/* @PERCONA */}
-      <NewsWrapper feedUrl="/percona-blog/feed" />
+      <NewsWrapper feedUrl={DEFAULT_FEED_URL} />
     </Drawer>
   );
 }
@@ -57,7 +47,6 @@ const getStyles = (theme: GrafanaTheme2) => {
       alignItems: `center`,
       justifyContent: `center`,
       gap: theme.spacing(2),
-      borderBottom: `1px solid ${theme.colors.border.weak}`,
     }),
     grot: css({
       display: `flex`,
@@ -69,11 +58,6 @@ const getStyles = (theme: GrafanaTheme2) => {
         width: `75px`,
         height: `75px`,
       },
-    }),
-    actions: css({
-      position: 'absolute',
-      right: theme.spacing(1),
-      top: theme.spacing(2),
     }),
   };
 };

@@ -6,7 +6,7 @@ import { OrgRole } from '@grafana/data';
 import { config } from '@grafana/runtime';
 import { wrapWithGrafanaContextMock } from 'app/percona/shared/helpers/testUtils';
 import { configureStore } from 'app/store/configureStore';
-import { StoreState } from 'app/types';
+import { StoreState } from 'app/types/store';
 
 import AlertRuleFromTemplate from './AlertRuleFromTemplate';
 
@@ -20,12 +20,12 @@ const setup = (role = OrgRole.Admin, isAuthorized = true) => {
       store={configureStore({
         percona: {
           user: { isAuthorized },
-          settings: { loading: false, result: { isConnectedToPortal: true, alertingEnabled: true } },
+          settings: { loading: false, result: { alertingEnabled: true } },
         },
       } as StoreState)}
     >
       {wrapWithGrafanaContextMock(
-        <MemoryRouter>
+        <MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
           <AlertRuleFromTemplate />
         </MemoryRouter>
       )}

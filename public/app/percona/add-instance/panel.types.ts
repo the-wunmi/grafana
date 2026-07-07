@@ -34,6 +34,7 @@ export interface RemoteInstanceCredentials {
   tls?: boolean;
   tls_skip_verify?: boolean;
   pmm_agent_id?: string;
+  connection_timeout?: string;
 }
 
 export enum InstanceTypesExtra {
@@ -53,6 +54,7 @@ export const INSTANCE_TYPES_LABELS = {
   [Databases.postgresql]: 'PostgreSQL',
   [Databases.proxysql]: 'ProxySQL',
   [Databases.haproxy]: 'HAProxy',
+  [Databases.valkey]: 'Valkey',
   [InstanceTypesExtra.azure]: '',
   [InstanceTypesExtra.rds]: '',
   [InstanceTypesExtra.external]: '',

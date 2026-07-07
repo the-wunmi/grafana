@@ -5,13 +5,12 @@ import { useLocation } from 'react-router-dom-v5-compat';
 import { useLocalStorage } from 'react-use';
 
 import { FeatureState, GrafanaTheme2, NavModelItem, toIconName } from '@grafana/data';
+import { t } from '@grafana/i18n';
 import { useStyles2, Text, IconButton, Icon, Stack, FeatureBadge } from '@grafana/ui';
 import { useGrafana } from 'app/core/context/GrafanaContext';
-import { Dot } from 'app/percona/shared/components/Elements/Dot';
 
 import { Indent } from '../../Indent/Indent';
 
-import { FeatureHighlight } from './FeatureHighlight';
 import { MegaMenuItemText } from './MegaMenuItemText';
 import { hasChildMatch } from './utils';
 
@@ -31,7 +30,6 @@ export function MegaMenuItem({ link, activeItem, level = 0, onClick, onPin, isPi
   const state = chrome.useState();
   const menuIsDocked = state.megaMenuDocked;
   const location = useLocation();
-  const FeatureHighlightWrapper = link.highlightText ? FeatureHighlight : React.Fragment;
   const hasActiveChild = hasChildMatch(link, activeItem);
   const isActive = link === activeItem || (level === MAX_DEPTH && hasActiveChild);
   const [sectionExpanded, setSectionExpanded] = useLocalStorage(
@@ -81,18 +79,10 @@ export function MegaMenuItem({ link, activeItem, level = 0, onClick, onPin, isPi
 
   return (
     <li ref={item} className={styles.listItem}>
-      <div
-        className={cx(styles.menuItem, {
-          [styles.menuItemWithIcon]: Boolean(level === 0 && iconElement),
-        })}
-      >
+      <div className={styles.menuItem}>
         {level !== 0 && <Indent level={level === MAX_DEPTH ? level - 1 : level} spacing={3} />}
         {level === MAX_DEPTH && <div className={styles.itemConnector} />}
-        <div
-          // @PERCONA
-          aria-label={link.text}
-          className={styles.collapsibleSectionWrapper}
-        >
+        <div className={styles.collapsibleSectionWrapper}>
           <MegaMenuItemText
             isActive={isActive}
             onClick={() => {
@@ -107,30 +97,13 @@ export function MegaMenuItem({ link, activeItem, level = 0, onClick, onPin, isPi
             <div
               className={cx(styles.labelWrapper, {
                 [styles.hasActiveChild]: hasActiveChild,
-                // @PERCONA - show icons for inner items
-                [styles.labelWrapperWithIcon]: Boolean(level <= 1 && link.icon),
+                [styles.labelWrapperWithIcon]: Boolean(level === 0 && iconElement),
               })}
             >
-              {/* @PERCONA - show icons for inner items */}
-              {level <= 1 && link.icon && (
-                <FeatureHighlightWrapper>
-                  <>
-                    <Icon
-                      className={cx(styles.icon, level > 0 && styles.deepIcon)}
-                      name={toIconName(link.icon) ?? 'link'}
-                      size={level === 0 ? 'lg' : 'md'}
-                    />
-                    {/* @PERCONA */}
-                    {!!link.showDot && <Dot left={23} top={0} />}
-                  </>
-                </FeatureHighlightWrapper>
-              )}
-              {/* @PERCONA */}
-              <div className={styles.relativeText}>
-                <Text truncate>{link.text}</Text>
-                {/* @PERCONA */}
-                {!!link.showDot && !link.icon && <Dot right={-8} top={2} />}
-              </div>
+              {level === 0 && iconElement}
+              <Text truncate element="p">
+                {link.text}
+              </Text>
               {link.isNew && <FeatureBadge featureState={FeatureState.new} />}
             </div>
           </MegaMenuItemText>
@@ -138,7 +111,16 @@ export function MegaMenuItem({ link, activeItem, level = 0, onClick, onPin, isPi
         <div className={styles.collapseButtonWrapper}>
           {showExpandButton && (
             <IconButton
-              aria-label={`${sectionExpanded ? 'Collapse' : 'Expand'} section ${link.text}`}
+              aria-label={
+                sectionExpanded
+                  ? t('navigation.megamenu-item.collapse-aria-label', 'Collapse section: {{sectionName}}', {
+                      sectionName: link.text,
+                    })
+                  : t('navigation.megamenu-item.expand-aria-label', 'Expand section: {{sectionName}}', {
+                      sectionName: link.text,
+                    })
+              }
+              aria-expanded={Boolean(sectionExpanded)}
               className={styles.collapseButton}
               onClick={() => setSectionExpanded(!sectionExpanded)}
               name={getIconName(Boolean(sectionExpanded))}
@@ -190,13 +172,9 @@ const getStyles = (theme: GrafanaTheme2) => ({
   menuItem: css({
     display: 'flex',
     alignItems: 'center',
-    gap: theme.spacing(1),
+    gap: theme.spacing(1.5),
     height: theme.spacing(4),
-    paddingLeft: theme.spacing(0.5),
     position: 'relative',
-  }),
-  menuItemWithIcon: css({
-    paddingLeft: theme.spacing(0),
   }),
   collapseButtonWrapper: css({
     display: 'flex',
@@ -230,15 +208,16 @@ const getStyles = (theme: GrafanaTheme2) => ({
   labelWrapper: css({
     display: 'flex',
     alignItems: 'center',
-    gap: theme.spacing(2),
-    minWidth: 0,
+    gap: theme.spacing(1),
     paddingLeft: theme.spacing(1),
-  }),
-  labelWrapperWithIcon: css({
-    paddingLeft: theme.spacing(0.5),
+    minWidth: 0,
   }),
   hasActiveChild: css({
     color: theme.colors.text.primary,
+  }),
+  labelWrapperWithIcon: css({
+    minWidth: theme.spacing(7),
+    paddingLeft: theme.spacing(0.5),
   }),
   children: css({
     display: 'flex',
@@ -249,14 +228,6 @@ const getStyles = (theme: GrafanaTheme2) => ({
     color: theme.colors.text.secondary,
     fontStyle: 'italic',
     padding: theme.spacing(1, 1.5, 1, 7),
-  }),
-  // @PERCONA
-  relativeText: css({
-    position: 'relative',
-  }),
-  // @PERCONA
-  deepIcon: css({
-    marginRight: theme.spacing(-1.5),
   }),
 });
 

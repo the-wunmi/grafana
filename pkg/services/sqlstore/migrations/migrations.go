@@ -109,10 +109,7 @@ func (oss *OSSMigrations) AddMigration(mg *Migrator) {
 
 	ualert.CreateOrgMigratedKVStoreEntries(mg)
 
-	// https://github.com/grafana/identity-access-team/issues/546: tracks removal of the feature toggle from the annotation permission migration
-	if oss.features != nil && oss.features.IsEnabledGlobally(featuremgmt.FlagAnnotationPermissionUpdate) {
-		accesscontrol.AddManagedDashboardAnnotationActionsMigration(mg)
-	}
+	accesscontrol.AddManagedDashboardAnnotationActionsMigration(mg)
 
 	addCloudMigrationsMigrations(mg)
 
@@ -121,14 +118,13 @@ func (oss *OSSMigrations) AddMigration(mg *Migrator) {
 	ualert.AddRuleNotificationSettingsColumns(mg)
 
 	accesscontrol.AddAlertingScopeRemovalMigration(mg)
+	accesscontrol.AddAnnotationsAllScopeReplacementMigration(mg)
 
 	accesscontrol.AddManagedFolderAlertingSilencesActionsMigrator(mg)
 
 	ualert.AddRecordingRuleColumns(mg)
 
 	ualert.AddStateResolvedAtColumns(mg)
-
-	enableTraceQLStreaming(mg, oss.features != nil && oss.features.IsEnabledGlobally(featuremgmt.FlagTraceQLStreaming))
 
 	ualert.AddReceiverActionScopesMigration(mg)
 
@@ -147,4 +143,34 @@ func (oss *OSSMigrations) AddMigration(mg *Migrator) {
 	ualert.AddAlertRuleStateTable(mg)
 
 	ualert.AddAlertRuleGuidMigration(mg)
+
+	ualert.AddAlertRuleKeepFiringFor(mg)
+
+	ualert.AddAlertRuleMissingSeriesEvalsToResolve(mg)
+
+	accesscontrol.AddDatasourceDrilldownRemovalMigration(mg)
+
+	ualert.DropTitleUniqueIndexMigration(mg)
+
+	ualert.AddStateFiredAtColumn(mg)
+
+	ualert.CollateAlertRuleGroup(mg)
+
+	ualert.ExpandAlertRuleUpdatedByMigration(mg)
+
+	ualert.AddAlertRuleGroupIndexMigration(mg)
+
+	ualert.AddStateAnnotationsColumn(mg)
+
+	ualert.CollateBinAlertRuleNamespace(mg)
+
+	ualert.CollateBinAlertRuleGroup(mg)
+
+	accesscontrol.AddReceiverProtectedFieldsEditor(mg)
+
+	ualert.AddStateEvaluationDurationColumn(mg)
+	ualert.AddStateLastErrorColumn(mg)
+	ualert.AddStateLastResultColumn(mg)
+
+	accesscontrol.AddScopedReceiverTestingPermissions(mg)
 }

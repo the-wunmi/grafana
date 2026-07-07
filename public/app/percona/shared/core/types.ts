@@ -5,6 +5,7 @@ export enum Databases {
   mariadb = 'mariadb',
   proxysql = 'proxysql',
   haproxy = 'haproxy',
+  valkey = 'valkey',
 }
 
 export enum ApiErrorCode {
@@ -73,12 +74,6 @@ export interface PaginatedFomattedResponse<T> {
 export interface PrioritizedLabels {
   primary: string[];
   secondary: string[];
-}
-
-export interface ServerInfo {
-  serverName: string;
-  serverId: string;
-  serverTelemetryId: string;
 }
 
 export enum Severity {

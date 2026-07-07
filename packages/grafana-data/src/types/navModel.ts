@@ -1,7 +1,7 @@
 import { ComponentType } from 'react';
 
-import { LinkTarget } from './dataLink';
 import { IconName } from './icon';
+import { LinkTarget } from './linkTarget';
 
 export interface NavLinkDTO {
   id?: string;
@@ -40,12 +40,6 @@ export interface NavModelItem extends NavLinkDTO {
   tabCounter?: number;
   hideFromBreadcrumbs?: boolean;
   emptyMessage?: string;
-
-  // @PERCONA
-  isDivider?: boolean;
-  isHeading?: boolean;
-  showChildren?: boolean;
-  showDot?: boolean;
 }
 
 /**

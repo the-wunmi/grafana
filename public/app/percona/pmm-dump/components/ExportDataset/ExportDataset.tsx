@@ -5,19 +5,22 @@ import { useHistory } from 'react-router-dom';
 
 import { SelectableValue, DateTime, dateTime, AppEvents, PageLayoutType } from '@grafana/data';
 import { LinkButton, PageToolbar, DateTimePicker, useStyles2 } from '@grafana/ui';
-import appEvents from 'app/core/app_events';
+import { appEvents } from 'app/core/app_events';
 import { Page } from 'app/core/components/Page/Page';
-import { SwitchRow } from 'app/percona/settings/components/Advanced/SwitchRow';
+import { PMMDumpService } from 'app/percona/pmm-dump/PMMDump.service';
+import { SwitchRow } from 'app/percona/shared/components/Elements/SwitchRow';
 import { LoaderButton } from 'app/percona/shared/components/Elements/LoaderButton';
 import { MultiSelectField } from 'app/percona/shared/components/Form/MultiSelectField';
-import { PMM_EXPORT_DUMP_PAGE } from 'app/percona/shared/components/PerconaBootstrapper/PerconaNavigation';
+import { PasswordInputField } from 'app/percona/shared/components/Form/PasswordInput';
+import { PMM_EXPORT_DUMP_PAGE } from 'app/percona/shared/components/PerconaBootstrapper/PerconaNavigation/PerconaNavigation.constants';
 import { useCancelToken } from 'app/percona/shared/components/hooks/cancelToken.hook';
-import { triggerDumpAction } from 'app/percona/shared/core/reducers/pmmDump/pmmDump';
+import { mapExportData } from 'app/percona/shared/core/reducers/pmmDump/pmmDump.utils';
 import { fetchActiveServiceTypesAction, fetchServicesAction } from 'app/percona/shared/core/reducers/services';
 import { getServices } from 'app/percona/shared/core/selectors';
 import { isApiCancelError } from 'app/percona/shared/helpers/api';
+import validators from 'app/percona/shared/helpers/validators';
 import { useAppDispatch } from 'app/store/store';
-import { useSelector } from 'app/types';
+import { useSelector } from 'app/types/store';
 
 import { GET_SERVICES_CANCEL_TOKEN, DUMP_URL, TWELVE_HOURS } from './ExportDataset.constants';
 import { Messages } from './ExportDataset.messages';
@@ -92,16 +95,24 @@ const ExportDataset: FC = () => {
       serviceList = [];
     }
 
-    await dispatch(
-      triggerDumpAction({
-        serviceNames: serviceList,
-        startTime: startDate.toISOString(),
-        endTime: endDate.toISOString(),
-        exportQan: !!data.QAN,
-        ignoreLoad: !!data.load,
-      })
-    );
-    history.push(DUMP_URL);
+    const encryptionEnabled = !!data.enableEncryption;
+
+    try {
+      await PMMDumpService.trigger(
+        mapExportData({
+          serviceNames: serviceList,
+          startTime: startDate.toISOString(),
+          endTime: endDate.toISOString(),
+          exportQan: !!data.QAN,
+          ignoreLoad: !!data.load,
+          enableEncryption: encryptionEnabled,
+          encryptionPassword: encryptionEnabled ? data.encryptionPassword : undefined,
+        })
+      );
+      history.push(DUMP_URL);
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   return (
@@ -110,7 +121,7 @@ const ExportDataset: FC = () => {
         <Form
           onSubmit={handleSubmit}
           initialValues={initialValues}
-          render={({ handleSubmit, form }) => (
+          render={({ handleSubmit, values }) => (
             <form onSubmit={handleSubmit} className={styles.form}>
               <PageToolbar title={Messages.breadCrumbTitle} onGoBack={handleGoBack}>
                 <LinkButton href={DUMP_URL} data-testid="cancel-button" variant="secondary" fill="outline">
@@ -191,7 +202,32 @@ const ExportDataset: FC = () => {
                         tooltip={Messages.ignoreLoadTooltip}
                         component={SwitchRow}
                       />
+
+                      <Field
+                        name="enableEncryption"
+                        type="checkbox"
+                        label={Messages.enableEncryption}
+                        dataTestId="pmm-dump-enable-encryption"
+                        tooltip={Messages.enableEncryptionTooltip}
+                        component={SwitchRow}
+                      />
                     </div>
+                    {values.enableEncryption && (
+                      <div className={styles.encryptionRow}>
+                        <PasswordInputField
+                          name="encryptionPassword"
+                          label={Messages.encryptionPassword}
+                          placeholder={Messages.encryptionPasswordPlaceholder}
+                          validators={[
+                            validators.required,
+                            validators.minLength(8),
+                            validators.containLetters,
+                            validators.containNumbers,
+                            validators.containSpecialCharacters,
+                          ]}
+                        />
+                      </div>
+                    )}
                     <div className={styles.submitButton}>
                       <LoaderButton
                         data-testid="create-dataset-submit-button"

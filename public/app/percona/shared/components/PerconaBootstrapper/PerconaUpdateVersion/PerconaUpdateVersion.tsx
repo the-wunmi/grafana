@@ -1,8 +1,9 @@
 import { useEffect } from 'react';
 
+import { locationService } from '@grafana/runtime';
 import { dateTimeFormat } from '@grafana/data';
 import { Modal, useStyles2, Button } from '@grafana/ui';
-import { PMM_UPDATES_LINK } from 'app/percona/shared/components/PerconaBootstrapper/PerconaNavigation';
+import { PMM_UPDATES_LINK } from 'app/percona/shared/components/PerconaBootstrapper/PerconaNavigation/PerconaNavigation.constants';
 import {
   checkUpdatesChangeLogs,
   setShowUpdateModal,
@@ -10,8 +11,9 @@ import {
 } from 'app/percona/shared/core/reducers/updates';
 import { setSnoozedVersion } from 'app/percona/shared/core/reducers/user/user';
 import { getPerconaSettings, getPerconaUser, getUpdatesInfo } from 'app/percona/shared/core/selectors';
+import { isPmmNavEnabled } from 'app/percona/shared/helpers/plugin';
 import { useAppDispatch } from 'app/store/store';
-import { useSelector } from 'app/types';
+import { useSelector } from 'app/types/store';
 
 import { Messages } from './PerconaUpdateVersion.constants';
 import { getStyles } from './PerconaUpdateVersion.styles';
@@ -52,7 +54,12 @@ const PerconaUpdateVersion = () => {
 
   const onUpdateClick = () => {
     dispatch(setShowUpdateModal(false));
-    window.location.assign(PMM_UPDATES_LINK.url!);
+
+    if (isPmmNavEnabled()) {
+      locationService.push(PMM_UPDATES_LINK.url!);
+    } else {
+      window.location.assign(PMM_UPDATES_LINK.url!);
+    }
   };
 
   return (

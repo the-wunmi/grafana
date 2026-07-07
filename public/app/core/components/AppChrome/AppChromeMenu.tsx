@@ -2,12 +2,12 @@ import { css } from '@emotion/css';
 import { useDialog } from '@react-aria/dialog';
 import { FocusScope } from '@react-aria/focus';
 import { OverlayContainer, useOverlay } from '@react-aria/overlays';
-import { useTour } from '@reactour/tour';
 import { useRef } from 'react';
 import CSSTransition from 'react-transition-group/CSSTransition';
 
 import { GrafanaTheme2 } from '@grafana/data';
 import { selectors } from '@grafana/e2e-selectors';
+import { t } from '@grafana/i18n';
 import { useStyles2, useTheme2 } from '@grafana/ui';
 import { useGrafana } from 'app/core/context/GrafanaContext';
 
@@ -28,15 +28,12 @@ export function AppChromeMenu({}: Props) {
   const isOpen = state.megaMenuOpen && !state.megaMenuDocked;
   const onClose = () => chrome.setMegaMenuOpen(false);
 
-  // @PERCONA
-  const { isOpen: isTourOpen } = useTour();
-
   const { overlayProps, underlayProps } = useOverlay(
     {
-      isDismissable: !isTourOpen,
+      isDismissable: true,
       isOpen: true,
       onClose,
-      isKeyboardDismissDisabled: !!isTourOpen,
+      isKeyboardDismissDisabled: false,
       shouldCloseOnInteractOutside: (element) => {
         // don't close when interacting with a select menu inside the mega menu
         // e.g. for the org switcher
@@ -48,7 +45,7 @@ export function AppChromeMenu({}: Props) {
     },
     ref
   );
-  const { dialogProps } = useDialog({}, ref);
+  const { dialogProps } = useDialog({ 'aria-label': t('navigation.megamenu.dialog-label', 'Navigation') }, ref);
   const styles = useStyles2(getStyles);
 
   return (

@@ -5,7 +5,8 @@ import { PanelProps, dateTime, LoadingState } from '@grafana/data';
 import { config } from '@grafana/runtime';
 import { CheckService } from 'app/percona/check/Check.service';
 import { configureStore } from 'app/store/configureStore';
-import { OrgRole, StoreState } from 'app/types';
+import { StoreState } from 'app/types/store';
+import { OrgRole } from '@grafana/data';
 
 import { Failed } from './Failed';
 
@@ -100,7 +101,7 @@ describe('Failed::', () => {
         store={configureStore({
           percona: {
             user: { isAuthorized: true },
-            settings: { loading: false, result: { advisorEnabled: true, isConnectedToPortal: false } },
+            settings: { loading: false, result: { advisorEnabled: true } },
           },
         } as StoreState)}
       >
@@ -155,7 +156,7 @@ describe('Failed::', () => {
         store={configureStore({
           percona: {
             user: { isAuthorized: false },
-            settings: { loading: false, result: { advisorEnabled: true, isConnectedToPortal: false } },
+            settings: { loading: false, result: { advisorEnabled: true } },
           },
         } as StoreState)}
       >
@@ -208,7 +209,7 @@ describe('Failed::', () => {
         store={configureStore({
           percona: {
             user: { isAuthorized: true },
-            settings: { loading: false, result: { advisorEnabled: true, isConnectedToPortal: false } },
+            settings: { loading: false, result: { advisorEnabled: true } },
           },
         } as StoreState)}
       >
@@ -258,7 +259,7 @@ describe('Failed::', () => {
         store={configureStore({
           percona: {
             user: { isAuthorized: false },
-            settings: { loading: false, result: { advisorEnabled: true, isConnectedToPortal: false } },
+            settings: { loading: false, result: { advisorEnabled: true } },
           },
         } as StoreState)}
       >
@@ -278,7 +279,7 @@ describe('Failed::', () => {
         store={configureStore({
           percona: {
             user: { isAuthorized: false },
-            settings: { loading: false, result: { advisorEnabled: true, isConnectedToPortal: false } },
+            settings: { loading: false, result: { advisorEnabled: true } },
           },
         } as StoreState)}
       >

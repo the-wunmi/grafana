@@ -3,7 +3,7 @@ import { forwardRef, ReactNode } from 'react';
 
 import { GrafanaTheme2 } from '@grafana/data';
 
-import { useStyles2 } from '../../themes';
+import { useStyles2 } from '../../themes/ThemeContext';
 
 export interface Props {
   /** Children should be a single <Tab /> or an array of <Tab /> */
@@ -16,6 +16,11 @@ export interface Props {
   dataTestId?: string;
 }
 
+/**
+ * A composition component for rendering a TabBar with Tabs for navigation.
+ *
+ * https://developers.grafana.com/ui/latest/index.html?path=/docs/navigation-tabs--docs
+ */
 export const TabsBar = forwardRef<HTMLDivElement, Props>(
   (
     {
@@ -28,7 +33,7 @@ export const TabsBar = forwardRef<HTMLDivElement, Props>(
     },
     ref
   ) => {
-    const styles = useStyles2((theme) => getStyles(theme, vertical));
+    const styles = useStyles2(getStyles, vertical);
 
     return (
       <div className={cx(styles.tabsWrapper, hideBorder && styles.noBorder, className)} ref={ref}>

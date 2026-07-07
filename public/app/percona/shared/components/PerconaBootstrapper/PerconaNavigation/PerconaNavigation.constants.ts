@@ -8,6 +8,14 @@ export const WEIGHTS = {
   config: -900,
 };
 
+export const PMM_BACKUP_ADD_EDIT: NavModelItem = {
+  id: 'backup-add-edit',
+  text: 'Create backup',
+  url: `${config.appSubUrl}/backup/new`,
+  hideFromBreadcrumbs: true,
+  isCreateAction: true,
+};
+
 export const PMM_BACKUP_PAGE: NavModelItem = {
   id: 'backup',
   icon: 'history',
@@ -36,6 +44,7 @@ export const PMM_BACKUP_PAGE: NavModelItem = {
       text: 'Storage Locations',
       url: `${config.appSubUrl}/backup/locations`,
     },
+    PMM_BACKUP_ADD_EDIT,
   ],
 };
 
@@ -95,7 +104,6 @@ export const PMM_UPDATES_LINK: NavModelItem = {
   url: '/pmm-ui/updates',
   hideFromTabs: true,
   target: '_self',
-  showDot: false,
 };
 
 export const PMM_HEADING_LINK: NavModelItem = {
@@ -169,75 +177,6 @@ export const PMM_ACCESS_ROLES_PAGE: NavModelItem = {
   text: 'Access Roles',
 };
 
-export const getPmmSettingsPage = (alertingEnabled = false): NavModelItem => {
-  const children: NavModelItem[] = [
-    {
-      id: 'settings-metrics-resolution',
-      text: 'Metrics Resolution',
-      url: `${config.appSubUrl}/settings/metrics-resolution`,
-    },
-    {
-      id: 'settings-advanced',
-      text: 'Advanced Settings',
-      url: `${config.appSubUrl}/settings/advanced-settings`,
-    },
-    {
-      id: 'settings-ssh',
-      text: 'SSH Key',
-      url: `${config.appSubUrl}/settings/ssh-key`,
-    },
-    {
-      id: 'settings-percona-platform',
-      text: 'Percona Platform',
-      url: `${config.appSubUrl}/settings/percona-platform`,
-    },
-  ];
-
-  // TODO remove after integrating SMTP/slack with Grafana's alerting system
-  // if (alertingEnabled) {
-  //   children.push({
-  //     id: 'settings-communication',
-  //     text: 'Communication',
-  //     url: `${config.appSubUrl}/settings/communication`,
-  //   });
-  // }
-  const page: NavModelItem = {
-    id: 'settings',
-    icon: 'percona-setting',
-    text: 'Settings',
-    sortWeight: WEIGHTS.config,
-    url: `${config.appSubUrl}/settings`,
-    subTitle: 'Percona Settings',
-    children,
-  };
-
-  return page;
-};
-
-export const PMM_TICKETS_PAGE: NavModelItem = {
-  id: 'tickets',
-  icon: 'ticket',
-  text: 'List of tickets opened by Customer Organization',
-  subTitle: 'Percona Support Tickets from Portal',
-  url: `${config.appSubUrl}/tickets`,
-};
-
-export const PMM_ENTITLEMENTS_PAGE: NavModelItem = {
-  id: 'entitlements',
-  icon: 'cloud',
-  text: 'Entitlements',
-  subTitle: 'Percona Entitlements',
-  url: `${config.appSubUrl}/entitlements`,
-};
-
-export const PMM_ENVIRONMENT_OVERVIEW_PAGE: NavModelItem = {
-  id: 'environment-overview',
-  icon: 'clouds',
-  text: 'Environment Overview',
-  subTitle: 'Percona Environment Overview',
-  url: `${config.appSubUrl}/environment-overview`,
-};
-
 /**
  * Mapping of menu items id to folders name.
  *
@@ -248,6 +187,7 @@ export const NAV_FOLDER_MAP: Record<string, string> = {
   mysql: 'MySQL',
   mongo: 'MongoDB',
   postgre: 'PostgreSQL',
+  valkey: 'Valkey',
 };
 
 export const NAV_ID_TO_SERVICE: Record<string, ServiceType> = {
@@ -256,6 +196,7 @@ export const NAV_ID_TO_SERVICE: Record<string, ServiceType> = {
   postgre: ServiceType.posgresql,
   proxysql: ServiceType.proxysql,
   haproxy: ServiceType.haproxy,
+  valkey: ServiceType.valkey,
 };
 
 // 5 mins
@@ -364,7 +305,6 @@ export const PMM_NAV_MYSQL: NavModelItem = {
       text: 'High availability',
       icon: 'percona-cluster',
       hideFromTabs: true,
-      showChildren: true,
       url: `${config.appSubUrl}/d/mysql-group-replicaset-summary`,
       children: [
         {
@@ -471,7 +411,6 @@ export const PMM_NAV_MONGO: NavModelItem = {
       text: 'High availability',
       icon: 'percona-cluster',
       hideFromTabs: true,
-      showChildren: true,
       url: `${config.appSubUrl}/d/mongodb-cluster-summary`,
       children: [
         {
@@ -548,7 +487,6 @@ export const PMM_NAV_POSTGRE: NavModelItem = {
       text: 'High availability',
       icon: 'percona-cluster',
       hideFromTabs: true,
-      showChildren: true,
       url: `${config.appSubUrl}/d/postgresql-replication-overview`,
       children: [
         {
@@ -601,4 +539,85 @@ export const PMM_NAV_QAN: NavModelItem = {
   url: `${config.appSubUrl}/d/pmm-qan/pmm-query-analytics`,
   sortWeight: WEIGHTS.dashboards,
   hideFromTabs: true,
+};
+
+export const PMM_NAV_VALKEY: NavModelItem = {
+  id: 'valkey',
+  text: 'Valkey',
+  icon: 'percona-database-valkey',
+  url: `${config.appSubUrl}/d/valkey-overview/valkey-redis-overview`,
+  sortWeight: WEIGHTS.dashboards,
+  hideFromTabs: true,
+  children: [
+    {
+      id: 'valkey-overview',
+      text: 'Overview',
+      icon: 'percona-nav-overview',
+      url: `${config.appSubUrl}/d/valkey-overview/valkey-redis-overview`,
+      hideFromTabs: true,
+    },
+    {
+      id: 'valkey-load',
+      text: 'Load',
+      icon: 'sitemap',
+      url: `${config.appSubUrl}/d/valkey-load/valkey-redis-load`,
+      hideFromTabs: true,
+    },
+    {
+      id: 'valkey-memory',
+      text: 'Memory',
+      icon: 'percona-memory',
+      url: `${config.appSubUrl}/d/valkey-memory/valkey-redis-memory`,
+      hideFromTabs: true,
+    },
+    {
+      id: 'valkey-network',
+      text: 'Network',
+      icon: 'percona-network',
+      url: `${config.appSubUrl}/d/valkey-network/valkey-redis-network`,
+      hideFromTabs: true,
+    },
+    {
+      id: 'valkey-clients',
+      text: 'Clients',
+      icon: 'sitemap',
+      url: `${config.appSubUrl}/d/valkey-clients/valkey-redis-clients`,
+      hideFromTabs: true,
+    },
+    {
+      id: 'valkey-cluster-details',
+      text: 'Cluster Details',
+      icon: 'percona-cluster',
+      url: `${config.appSubUrl}/d/valkey-cluster-details/valkey-redis-cluster-detail`,
+      hideFromTabs: true,
+    },
+    {
+      id: 'valkey-replication',
+      text: 'Replication',
+      icon: 'percona-cluster',
+      url: `${config.appSubUrl}/d/valkey-replication/valkey-redis-replication`,
+      hideFromTabs: true,
+    },
+    {
+      id: 'valkey-persistence',
+      text: 'Persistence',
+      icon: 'sitemap',
+      url: `${config.appSubUrl}/d/valkey-persistence-details/valkey-redis-persistence-details`,
+      hideFromTabs: true,
+    },
+    {
+      id: 'valkey-commands',
+      text: 'Command details',
+      icon: 'sitemap',
+      url: `${config.appSubUrl}/d/valkey-command-details/valkey-redis-command-detail`,
+      hideFromTabs: true,
+    },
+    {
+      id: 'valkey-slowlog',
+      text: 'Slow Log',
+      icon: 'sitemap',
+      url: `${config.appSubUrl}/d/valkey-slowlog/valkey-redis-slowlog`,
+      hideFromTabs: true,
+    },
+  ],
 };
