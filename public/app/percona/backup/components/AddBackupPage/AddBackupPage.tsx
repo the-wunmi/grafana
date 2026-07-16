@@ -216,7 +216,6 @@ const AddBackupPage: FC = () => {
             changeVendor: ([vendor]: [Databases], state, tools) => {
               tools.changeValue(state, 'vendor', () => vendor);
               tools.changeValue(state, 'dataModel', () => getDataModelFromVendor(vendor));
-              //TODO remove this when we support incremental backups for MySQL
               if (vendor === Databases.mysql) {
                 tools.changeValue(state, 'mode', () => BackupMode.SNAPSHOT);
               }
@@ -348,8 +347,7 @@ const AddBackupPage: FC = () => {
                             <RadioButtonGroupField
                               options={getBackupModeOptions(values.vendor)}
                               name="mode"
-                              //TODO remove this when we support incremental backups for MySQL
-                              disabled={editing || values.vendor === Databases.mysql}
+                              disabled={editing}
                               label={Messages.type}
                               fullWidth
                               inputProps={{
